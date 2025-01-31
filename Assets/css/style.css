@@ -1,0 +1,180 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #3c5857;
+    color: #fff;
+}
+
+/* Contenedor principal */
+.contenedorPrincipal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 90vh;
+}
+
+/* Logo y título */
+.titulo {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.logo {
+    width: 300px; /* Tamaño ajustado para 100% zoom */
+    filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.3));
+    
+}
+
+/* Formulario de inicio de sesión */
+.contenedorInicioSesion {
+    display: flex;
+    align-items: center;
+    background: #3c5857;
+    border-radius: 12px;
+    width: 100%;
+    flex-direction: column;
+    padding: 25px;
+    border: 5px solid #fff;
+    height: 70vh;
+}
+
+.contenedorDatos {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.contenedorDatos h2 {
+    color: #ffffff;
+    margin-top: 8%;
+    margin-bottom: 5%;
+    font-size: 2em; /* Tamaño ajustado para 100% zoom */
+}
+
+/* Estilos para los campos de entrada */
+input[type="text"],
+input[type="password"] {
+    justify-content: center;
+    width: 50%;
+    padding: 12px;
+    margin: 15px 0;
+    margin-left: 25%;
+    border: 1px solid #ebe2e2;
+    border-radius: 6px;
+    font-size: 1em; /* Tamaño ajustado para 100% zoom */
+    background: #ffffff;
+    color: #000000;
+}
+
+/* Botón de inicio de sesión */
+.contenedorDatos input[type="submit"] {
+    background: #d5dfde;
+    color: #000000;
+    border: none;
+    padding: 12px;
+    width: 50%;
+    border-radius: 6px;
+    margin-left: 25%;
+    cursor: pointer;
+    transition: 0.3s ease;
+    font-size: 1em; /* Tamaño ajustado para 100% zoom */
+    font-weight: bold;
+    margin-top: 5%;
+}
+
+.contenedorDatos input[type="submit"]:hover {
+    background: #40849c;
+}
+
+
+/* Enlace de registro */
+.contenedorDatos a {
+    display: flex;
+    justify-content: center;
+    color: #ffffff;
+    text-decoration: underline;
+    margin-top: 50px;
+    font-size: 1em; /* Tamaño ajustado para 100% zoom */
+}
+
+.contenedorDatos a:hover {
+    text-decoration: underline;
+}
+
+/*publicacion.php*/
+
+.contenedor2{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+   
+}
+/*Contenedores informacion de publicaciones*/
+.bloque1 {
+    display: flex;
+    flex-wrap: wrap;  /* Para que los elementos se ajusten en varias líneas */
+    justify-content: space-between;  /* Para que se distribuyan de manera equitativa */
+    margin-left: 0;
+    width: 100%;   
+}
+
+/* Estilo para cada bloque de contenido */
+.bloque0 {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: 35%;  /* Ajustamos el ancho para que quepan tres bloques por línea */
+    padding: 1%;  
+    margin-bottom: 20px;  /* Espaciado entre filas */
+}
+
+a {
+    text-decoration: none; /* Elimina el subrayado */
+    color: inherit; /* Mantiene el color del texto original, no cambia a azul */
+}
+a:hover {
+    text-decoration: none; /* Elimina el subrayado */
+    color: #16f1d4; /* Mantiene el color del texto original, no cambia a azul */
+}
+.negrita
+{
+    font-size: 1.5em;
+    color: #a0e4db;
+} 
+/*logo publicacion.php*/
+.foto
+{
+    width: 11%;
+}
+.añadir
+{
+    display: flex;
+    justify-content: center;
+    margin-top: 4%;
+    text-decoration: underline;
+}
+
+/*Formulario para insertar nuevos temas*/
+.bloque2
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.imagen-publicacion {
+    display: flex;
+    justify-content: center;
+    width: 100%;  /* Asegura que la imagen ocupe todo el ancho de su bloque */
+    height: auto;  /* Ajustamos la altura para que sea proporcional */
+    border-radius: 8px;
+    padding-bottom: 8%;
+}
+
+
