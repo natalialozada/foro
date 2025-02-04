@@ -88,20 +88,30 @@ function createResponseBlock(item) {
           img.classList.add("imagen-publicacion");
           div.appendChild(img);
       } else {
-          const label = document.createElement("strong"); // Para el encabezado en negrita
-          label.textContent = `${fields[field]}`;
+        const label = document.createElement("strong"); // Para el encabezado en negrita
+        label.textContent = `${fields[field]}`;
 
-          const link = document.createElement("a");
-          link.href = `respuesta.php?id_pub=${item.id_pub}`;
-          link.textContent =  " : " + item[field];
+        const span = document.createElement("span");
+        span.textContent = " : " + item[field];
 
-          div.appendChild(label)
-          div.appendChild(link);
+        div.appendChild(label);
+        div.appendChild(span);
          
       }
 
       bloque0.appendChild(div);
   });
+
+   const respuestaDiv = document.createElement("div");
+    respuestaDiv.classList.add("bloque-respuesta");
+
+    const respuestaLink = document.createElement("a");
+    respuestaLink.href = `respuesta.php?id_pub=${item.id_pub}`;
+    respuestaLink.textContent = "AÑADIR RESPUESTA";
+    respuestaLink.classList.add("link-respuesta");
+
+    respuestaDiv.appendChild(respuestaLink);
+    bloque0.appendChild(respuestaDiv);
 
   return bloque0;
 }

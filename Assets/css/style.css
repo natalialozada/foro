@@ -21,7 +21,7 @@ body {
 
 /* Logo y título */
 .titulo {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     text-align: center;
 }
 
@@ -111,17 +111,26 @@ input[type="password"] {
 
 .contenedor2{
     display: flex;
+    justify-content: center;
     flex-direction: row;
+    flex-wrap: wrap;
     width: 100%;
    
 }
 /*Contenedores informacion de publicaciones*/
 .bloque1 {
     display: flex;
-    flex-wrap: wrap;  /* Para que los elementos se ajusten en varias líneas */
-    justify-content: space-between;  /* Para que se distribuyan de manera equitativa */
+    justify-content: flex-start;  /* Para que se distribuyan de manera equitativa */
     margin-left: 0;
-    width: 100%;   
+     
+}
+
+.bloque-respuesta
+{
+   display: flex;
+   justify-content: center;
+   margin-top: 5%;
+   font-size: 1.1em;
 }
 
 /* Estilo para cada bloque de contenido */
@@ -129,7 +138,7 @@ input[type="password"] {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-    width: 35%;  /* Ajustamos el ancho para que quepan tres bloques por línea */
+    width: 30%;  /* Ajustamos el ancho para que quepan tres bloques por línea */
     padding: 1%;  
     margin-bottom: 20px;  /* Espaciado entre filas */
 }
@@ -150,13 +159,17 @@ a:hover {
 /*logo publicacion.php*/
 .foto
 {
-    width: 11%;
+    width: 15%;
 }
+
+
 .añadir
 {
     display: flex;
-    justify-content: center;
-    margin-top: 4%;
+    justify-content: flex-start;
+    margin-left: 6.2%;
+    margin-bottom: 1%;
+    font-size: 1.2em;
     text-decoration: underline;
 }
 
