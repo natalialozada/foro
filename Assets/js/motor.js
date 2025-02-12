@@ -83,7 +83,7 @@ function createResponseBlock(item) {
 
       if (field === "imagen") {
           const img = document.createElement("img");
-          img.src = `${item.imagen}`; // Ajusta la ruta correcta
+          img.src = `${item.imagen}`; 
           img.alt = "Imagen de la publicación";
           img.classList.add("imagen-publicacion");
           div.appendChild(img);

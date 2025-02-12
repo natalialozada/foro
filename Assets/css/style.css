@@ -58,7 +58,7 @@ body {
 }
 
 /* Estilos para los campos de entrada */
-input[type="text"],
+.contenedorDatos input[type="text"],
 input[type="password"] {
     justify-content: center;
     width: 50%;
@@ -189,5 +189,104 @@ a:hover {
     border-radius: 8px;
     padding-bottom: 8%;
 }
+
+/*Iniciar y Cerrar sesión*/
+
+.contenedorSesion 
+{
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    margin-top: 3%;
+  
+}
+.usuario
+{
+    display: flex;
+    justify-content: flex-start;
+    margin-left: 6.2%;
+    
+}
+.cerrarSesion
+{
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 7%;
+    
+}
+
+/*Insercion de nueva publicacion*/
+/* Contenedor principal */
+.contenedorTema {
+    width: 60%;
+    margin-left: 20%;
+    margin-top: 6.5%;
+    background: #f9f9f9;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Título */
+.tituloTema h1 {
+    font-size: 30px;
+    margin-bottom: 20px;
+    color: black;
+}
+.contenedorDatos input[type="submit"]
+{
+    width: 100%;
+}
+
+/* Estilo de los campos de entrada */
+.campo3, .campoTextArea, .campoFecha, .campoArchivo1 {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+    color: #000000;
+}
+
+/* Estilo especial para el textarea */
+.campoTextArea {
+    height: 150px;
+    resize: none;
+}
+
+/* Botón de envío */
+.boton1 {
+    width: 100%;
+    background: #0e7c61;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+    
+}
+
+.boton1:hover {
+    background: #0f573f;
+}
+
+/* Enlace para volver */
+.volver {
+    display: block;
+    margin-top: 20px;
+    text-decoration: underline;
+    color: black; /* Mantiene el color del texto original, no cambia a azul */
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.volver:hover {
+    color: #16f1d4;
+}
+
 
 
