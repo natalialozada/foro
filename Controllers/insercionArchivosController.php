@@ -1,7 +1,9 @@
 <?php
 
+session_start();
+
     // Tratamiento de los input type='text'
-    $autor = empty($_POST['autor']) ? '' : $_POST['autor'];
+    $usuario = $_SESSION['usuario'];
     $titulo = empty($_POST['titulo']) ? '' : $_POST['titulo'];
     $mensaje = empty($_POST['mensaje']) ? '' : $_POST['mensaje'];
     $fecha = empty($_POST['fecha']) ? '' : $_POST['fecha'];
@@ -15,7 +17,9 @@
 
     // Instanciacion del objeto
     $oData = new Datos;
-
+     
+    $idUsuario = $oData->getUserIdByName($usuario);
+    
 
 
     // Llamada al metodo para subir el archivo (uploadFile)
@@ -36,7 +40,7 @@
     $urlFileDb1 = substr($urlFileDb1, 3);
     // Llamada al metodo para la insertar el registro (setDataPreparedStatements1)
     $sql1 = "insert into publicacion (titulo, contenido, fecha, id_usu, imagen) values (?, ?, ?, ?, ?)";
-    $data = $oData->setDataPreparedStatements1($sql1, $titulo, $mensaje, $fecha, $autor, $urlFileDb1);
+    $data = $oData->setDataPreparedStatements1($sql1, $titulo, $mensaje, $fecha, $idUsuario, $urlFileDb1);
     
     echo $data;
 

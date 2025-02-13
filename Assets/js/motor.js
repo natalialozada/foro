@@ -77,30 +77,45 @@ function createResponseBlock(item) {
       num_respuestas: "Número de Respuestas"
   };
 
-  Object.keys(fields).forEach(field => {
-      const div = document.createElement("div");
-      div.classList.add("bloque1");
 
-      if (field === "imagen") {
-          const img = document.createElement("img");
-          img.src = `${item.imagen}`; 
-          img.alt = "Imagen de la publicación";
-          img.classList.add("imagen-publicacion");
-          div.appendChild(img);
-      } else {
-        const label = document.createElement("strong"); // Para el encabezado en negrita
-        label.textContent = `${fields[field]}`;
+  Object.keys(fields).forEach(field => {
+    const div = document.createElement("div");
+
+    if (field === "imagen") {
+        div.classList.add("bloque1");
+        const img = document.createElement("img");
+        img.src = `${item.imagen}`; 
+        img.alt = "Imagen de la publicación";
+        img.classList.add("imagen-publicacion");
+        div.appendChild(img);
+    } else if (field === "contenido") {
+        div.classList.add("bloque-contenido"); // Clase especial para diferenciar contenido
+
+        const label = document.createElement("strong");
+        label.textContent = `${fields[field]}: `; // Etiqueta en negrita
+
+        const contenidoTexto = document.createElement("p"); 
+        contenidoTexto.textContent = item[field]; 
+        contenidoTexto.classList.add("contenido-texto"); // Clase para estilizar mejor
+
+        div.appendChild(label);
+        div.appendChild(contenidoTexto);
+    } else {
+        div.classList.add("bloque1");
+
+        const label = document.createElement("strong");
+        label.textContent = `${fields[field]} `;
 
         const span = document.createElement("span");
         span.textContent = " : " + item[field];
 
         div.appendChild(label);
         div.appendChild(span);
-         
-      }
+    }
 
-      bloque0.appendChild(div);
-  });
+    bloque0.appendChild(div);
+});
+
 
    const respuestaDiv = document.createElement("div");
     respuestaDiv.classList.add("bloque-respuesta");
@@ -237,44 +252,57 @@ document.addEventListener("DOMContentLoaded", function () {
         }); 
       }
       /* ---------------------------------- FIN - (load) Seleccionar al cargar la página 1 */ 
-   /* ---------------------------------- INICIO - (submit) Insertar 1 */
-  // Paso 1: Obtener referencias:
-  const formInsert1 = document.getElementById("formInsercion1");
-  // Paso 2 - Asociación del elemento al evento (submit) y llamada a la función
-  if (formInsert1) {
-    const button1 = document.getElementById("botonInsercion1");
-    const controller1 = "Controllers/insercion.php";
-    const divResponse1 = document.getElementById("contenedor2");
-
-    // Manejo del evento submit para insertar los datos
-    formInsert1.addEventListener("submit", function (event) {
-        event.preventDefault();  // Evita el envío por defecto del formulario
-        button1.disabled = true;  // Desactiva el botón para evitar envíos múltiples
-
-        // Llamada a la función de inserción con fetch
-        makeFetchFormRequest('POST', controller1, formInsert1)
-            .then(response => {
-                if (response.status === "success")
-                {
-                    divResponse1.textContent = response.message;  // Muestra el mensaje de éxito
-                    formInsert1.reset();  // Limpia el formulario
-                }
-                else
-                {
-                    divResponse1.textContent = response.message || 'Error desconocido.';
-                }
-            })
-            .catch(error => {
-                console.error("Error en la inserción:", error.message);  // Muestra el error en la consola
-                divResponse1.textContent = 'No se pudo realizar la inserción';
-            })
-            .finally(() => {
-              // Habilita el botón nuevamente
-              button1.disabled = false;  
-            });
-    });
-  }
-  /* ---------------------------------- FIN - (submit) Insertar 1 */
+/*Se carga la publicacion cuando se da click a ella*/
+if (window.location.href.includes("respuesta.php")){
+        // y el DOM ha sido completamente cargado...
+        addEventListener("DOMContentLoaded", async (event) => {
+    
+          event.preventDefault();
+          
+    
+          // Paso 1 - Referencia de los elementos 
+          const formInsercionRespuesta = document.getElementById("formInsercionRespuesta");
+    
+          if (formInsercionRespuesta)
+          {
+            // Referencia de los elementos
+            const button1 = document.getElementById("botonRespuesta");
+            const controller1 = "Controllers/insercionConsultaRespuestaController.php";
+            const divResponse1 = document.getElementById("contenedor2");
+    
+            try
+            {
+              const response1 = await makeFetchFormRequest('POST', controller1, formInsercion2);
+              // Limpiar div antes de añadir elementos
+              divResponse1.innerHTML = '';
+    
+              if (response1.length > 0) {
+                // Datos (elimina la parte que genera el encabezado)
+                response1.forEach(item => {
+                    divResponse1.appendChild(createResponseBlock(item));
+                });
+              }
+              else
+              {
+                divResponse1.textContent = 'No hay datos que coincidan con la búsqueda realizada';
+              }
+    
+              formInsercion2.reset();
+            }
+            catch (error)
+            {
+              console.error("Error en la petición:", error.message);
+              divResponse1.textContent = 'No se ha realizado la acción';
+              formInsercion2.reset();
+            }
+            finally
+            {
+              button1.disabled = false;
+            }
+          }
+        }); 
+      }
+/*----------------------------------------------------------------------------*/ 
 
 /* ---------------------------------- INICIO - (submit) Insertar y subir archivos 1 */
   // Paso 1: Obtener referencias:

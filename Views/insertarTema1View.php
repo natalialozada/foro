@@ -1,9 +1,14 @@
+
+<?php
+session_start(); 
+?>
+
 <div id="contenedorTema" class="contenedorTema">
     <div class="tituloTema">
         <h1>Nueva Publicación</h1>   
     </div>
-    <form id="formSubidaArchivos" class="bloque3">
-        <input type="text" id="autor" name="autor" required class="campo3" placeholder="Autor">
+    <form id="formSubidaArchivos" class="bloque3" method="POST">
+    <input type="text" id="textoInsercion1" name="textoInsercion1" required class="campo4"  value="<?php echo $_SESSION['usuario']; ?>" readonly>
         <input type="text" id="titulo" name="titulo" required class="campo3" placeholder="Título">
         <textarea id="mensaje" name="mensaje" required class="campoTextArea" placeholder="Descripción"></textarea>
         <input type="date" id="fecha" name="fecha" required class="campoFecha">
@@ -13,6 +18,5 @@
     <a href="publicacion.php" class="volver">VOLVER AL ÍNDICE</a>
 </div>
 <div id="contenedor2" class="contenedor2"></div>
-
 
 

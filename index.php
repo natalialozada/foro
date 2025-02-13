@@ -20,7 +20,7 @@
                     <form action="" id="formInicia">
                     <input type="text" name="correo" id="correo" placeholder="Correo Electrónico">
                     <input type="password" name="contrasena" id="contrasena" placeholder="Contraseña">
-                    <input type="submit" value="Iniciar Sesión" id="botonInicio">
+                    <input type="submit" value="Iniciar Sesión" id="botonInicio" >
                     <a href="registro.php">¿No tienes cuenta? Registrate</a>
                     <div id="resultadoInicia"></div>
                     </form>

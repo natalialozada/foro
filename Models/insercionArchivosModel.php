@@ -64,27 +64,31 @@
         }
 
         // No devuelve datos de la BD (insert, update, delete con consultas preparadas)
-        public function setDataPreparedStatements1($sql, $par1, $par2, $par3, $par4, $par5)
-        {
-            $stmt = $this->mysqli->prepare($sql);
-            $stmt->bind_param("sssss", $par1, $par2, $par3, $par4, $par5); // i int, d float, s string, b blob
+        public function getUserIdByName($usuario)
+    {
+        $sql = "SELECT id_usu FROM usuarios WHERE nombre = ?";
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param("s", $usuario);
+        $stmt->execute();
+        $stmt->bind_result($id_usu);
+        $stmt->fetch();
 
-            if(!$stmt->execute())
-            {
-                $result = "La operación no se ha podido realizar. ";
-                // echo "Detalle del error en la consulta (setDataPreparedStatements1) - ";
-                // echo "Numero del error: " . $this->mysqli->errno . " - ";
-                // echo "Descripcion del error: " . $this->mysqli->error;                
-            }
-            else
-            {
-                $result = "Operación realizada con éxito. ";
-            }
-            
-            $this->mysqli->close();
-            return $result;
-            
-        }
+        return $id_usu;
     }
 
+    public function setDataPreparedStatements1($sql, $par1, $par2, $par3, $par4, $par5)
+    {
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param("sssss", $par1, $par2, $par3, $par4, $par5);
+
+        if (!$stmt->execute()) {
+            $result = "La operación no se ha podido realizar. ";
+        } else {
+            $result = "Operación realizada con éxito. ";
+        }
+
+        $this->mysqli->close();
+        return $result;
+    }
+    }
 ?>
