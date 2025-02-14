@@ -36,6 +36,8 @@ async function makeFetchFormRequest(method, url, form) {
     }
 }
 
+//Metodo para insertar con subida de archivos ----------------------------------------------------------------------------------------------------------------
+
 async function insertarDatos1(form, boton, controlador, contenedor) {
   
   
@@ -63,7 +65,9 @@ async function insertarDatos1(form, boton, controlador, contenedor) {
   }
 }
 
-function createResponseBlock(item) {
+
+//Response block publicacion --------------------------------------------------------------------------------------------------------------------------------
+function createResponseBlockPublicacion(item) {
   const bloque0 = document.createElement("div");
   bloque0.classList.add("bloque0");
 
@@ -131,10 +135,67 @@ function createResponseBlock(item) {
   return bloque0;
 }
 
+//Response block Respuesta -----------------------------------------------------------------------------------------------------------------------------------
 
- 
- 
- 
+function createResponseBlockRespuesta(item) {
+  const bloque0 = document.createElement("div");
+  bloque0.classList.add("bloque0");
+
+  // Definir los nombres de los campos
+  const fields = {
+      imagen: "Imagen",
+      titulo: "Título",
+      fecha: "Fecha",
+      autor: "Autor",
+      contenido: "Contenido",
+      num_respuestas: "Número de Respuestas"
+  };
+
+
+  Object.keys(fields).forEach(field => {
+    const div = document.createElement("div");
+
+    if (field === "imagen") {
+        div.classList.add("bloque1");
+        const img = document.createElement("img");
+        img.src = `${item.imagen}`; 
+        img.alt = "Imagen de la publicación";
+        img.classList.add("imagen-publicacion");
+        div.appendChild(img);
+    } else if (field === "contenido") {
+        div.classList.add("bloque-contenido"); // Clase especial para diferenciar contenido
+
+        const label = document.createElement("strong");
+        label.textContent = `${fields[field]}: `; // Etiqueta en negrita
+
+        const contenidoTexto = document.createElement("p"); 
+        contenidoTexto.textContent = item[field]; 
+        contenidoTexto.classList.add("contenido-texto"); // Clase para estilizar mejor
+
+        div.appendChild(label);
+        div.appendChild(contenidoTexto);
+    } else {
+        div.classList.add("bloque1");
+
+        const label = document.createElement("strong");
+        label.textContent = `${fields[field]} `;
+
+        const span = document.createElement("span");
+        span.textContent = " : " + item[field];
+
+        div.appendChild(label);
+        div.appendChild(span);
+    }
+
+    bloque0.appendChild(div);
+});
+
+  return bloque0;
+}
+
+
+//Formulario Registro ----------------------------------------------------------------------------------------------------------------------------------------
+
 document.addEventListener("DOMContentLoaded", function () {
     //alert("hola");
     const formRegistro = document.getElementById("formRegistro");
@@ -165,6 +226,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
         });
     }
+
+    //Formulario Iniciar -----------------------------------------------------------------------------------------------------------------------------------
 
     const formInicia = document.getElementById("formInicia");
 
@@ -199,6 +262,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
  
+    //CARGAR DATOS AL A CARGAR PUBLICACION -------------------------------------------------------------------------------------------------------------------
 
     /* ---------------------------------- al cargar la pagina salen los datos */ 
  
@@ -228,7 +292,7 @@ document.addEventListener("DOMContentLoaded", function () {
               if (response1.length > 0) {
                 // Datos (elimina la parte que genera el encabezado)
                 response1.forEach(item => {
-                    divResponse1.appendChild(createResponseBlock(item));
+                    divResponse1.appendChild(createResponseBlockPublicacion(item));
                 });
               }
               else
@@ -252,7 +316,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }); 
       }
       /* ---------------------------------- FIN - (load) Seleccionar al cargar la página 1 */ 
-/*Se carga la publicacion cuando se da click a ella*/
+
+/*CARGAR DATOS EN RESPUESTA CUANDO CARGA LA PAGINA*/
 if (window.location.href.includes("respuesta.php")){
         // y el DOM ha sido completamente cargado...
         addEventListener("DOMContentLoaded", async (event) => {
@@ -279,7 +344,7 @@ if (window.location.href.includes("respuesta.php")){
               if (response1.length > 0) {
                 // Datos (elimina la parte que genera el encabezado)
                 response1.forEach(item => {
-                    divResponse1.appendChild(createResponseBlock(item));
+                    divResponse1.appendChild(createResponseBlockRespuesta(item));
                 });
               }
               else
@@ -304,7 +369,9 @@ if (window.location.href.includes("respuesta.php")){
       }
 /*----------------------------------------------------------------------------*/ 
 
-/* ---------------------------------- INICIO - (submit) Insertar y subir archivos 1 */
+
+
+/* INSERTAR ARCHIVOS CON IMAGEN EN NUEVA PUBLICACION*/
   // Paso 1: Obtener referencias:
   const formSubidaArchivos = document.getElementById("formSubidaArchivos");
   // Paso 2 - Asociación del elemento al evento (submit) y llamada a la función
