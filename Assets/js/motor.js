@@ -321,8 +321,14 @@ document.addEventListener("DOMContentLoaded", function () {
 if (window.location.href.includes("respuesta.php")){
         // y el DOM ha sido completamente cargado...
         addEventListener("DOMContentLoaded", async (event) => {
-    
-          event.preventDefault();
+
+          const urlParams = new URLSearchParams(window.location.search);
+          const idPublicacion = urlParams.get("id_pub");
+
+          if (!idPublicacion) {
+            console.error("No se encontró el ID de la publicación.");
+            return;
+        }
           
     
           // Paso 1 - Referencia de los elementos 

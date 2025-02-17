@@ -1,50 +1,56 @@
 <?php
+ 
+require_once '../../Db/Con1DB.php';
+ 
 class Datos
 {
-
-    // Devuelve Datos (select)
-    public function getData1($sql, $typeParameters, $p1)
+    // Método para la inserción de datos
+    public function insertData($sql, $typeParameters, ...$params)
     {
-        // Conexión
-        $mysqli = Conex1::con1();
-        // Protección frente a SQL inyectado (mysql_real_escape_string)
-        $p1 = $mysqli->real_escape_string($p1);
-        // Sentencia
-        $statement = $mysqli->prepare($sql);
-        // Parámetros (ejemplo: si = string integer)
-        $statement->bind_param($typeParameters, $p1, $p1, $p1, $p1, $p1, $p1, $p1);
-        // Ejecución de la sentencia
-        $statement->execute();
-        // Obtención del resultado
-        $result = $statement->get_result();
-        // Obtención del numero de registros devueltos
-        $data = [];
-
-        if($result->num_rows >= 1) {
-            // Obtención de los datos
-            while ($row = $result->fetch_assoc()) {
-                $data[] = [
-                    'id_pub' => $row['id_pub'],
-                    'titulo' => $row['titulo'],
-                    'fecha' => $row['fecha'],
-                    'autor' => $row['autor'],  // Ahora muestra el nombre del usuario
-                    'contenido' => $row['contenido'],
-                    'num_respuestas' => $row['num_respuestas'],
-                    'imagen' => $row['imagen']
-                ];
+        try {
+            $mysqli = Conex1::con1();
+            $stmt = $mysqli->prepare($sql);
+            if (!$stmt) {
+                throw new Exception("Error en la preparación de la consulta: " . $mysqli->error);
             }
+ 
+            $stmt->bind_param($typeParameters, ...$params);
+            if (!$stmt->execute()) {
+                throw new Exception("Error en la ejecución de la consulta: " . $stmt->error);
+            }
+ 
+            $result = ["status" => "success", "message" => "Registro insertado con éxito."];
+        } catch (Exception $e) {
+            $result = ["status" => "error", "message" => $e->getMessage()];
+        } finally {
+            if ($stmt) $stmt->close();
+            $mysqli->close();
         }
-
-        // Liberación del conjunto de resultados
+ 
+        return $result;
+    }
+ 
+    // Método para obtener todos los registros
+    public function getData1($sql, $typeParameters = "", ...$params)
+    {
+        $mysqli = Conex1::con1();
+        $statement = $mysqli->prepare($sql);
+        if ($typeParameters) {
+            $statement->bind_param($typeParameters, ...$params);
+        }
+        $statement->execute();
+        $result = $statement->get_result();
+ 
+        $data = [];
+        while ($row = $result->fetch_assoc()) {
+            $data[] = $row;
+        }
+ 
         $result->free();
-        // Cierre de la declaración
         $statement->close();
-        // Cierre de la conexión
         $mysqli->close();
-
-        // Devolución del resultado
+ 
         return $data;
     }
-    
 }
 ?>

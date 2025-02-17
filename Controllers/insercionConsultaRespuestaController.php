@@ -1,46 +1,42 @@
 <?php
 
-    // Tratamiento input type='text'
-    $bus = empty($_POST['textoConsulta1']) ? '' : $_POST['textoConsulta1'];
+header('Content-Type: application/json');
 
-    // Preparación para el uso de LIKE
-    $bus = "%" . $bus . "%";
-
-    // Llamada a la conexión
-    require_once '../Db/Con1Db.php';
-    // Llamada al modelo
-    require_once '../Models/insercionConsultaRespuestaModel.php';    
-
-    // Instanciación del objeto
-    $obj1 = new Datos;
-    // Definición de la instrucción
-   
-    $sql1 = "SELECT 
-    p.id_pub, 
-    p.titulo, 
-    p.fecha, 
-    u.nombre AS autor,  -- Trae el nombre en vez del ID
-    p.contenido, 
-    p.num_respuestas, 
-    p.imagen
-    FROM publicacion p
-    JOIN usuarios u ON p.id_usu = u.id_usu
-    WHERE p.id_pub LIKE ? 
-    OR p.titulo LIKE ? 
-    OR p.fecha LIKE ? 
-    OR u.nombre LIKE ? 
-    OR p.contenido LIKE ? 
-    OR p.num_respuestas LIKE ?
-    OR p.imagen LIKE ?";
+try {
+    // Verificar y obtener los datos del formulario
+    $textoInsercionAutor = $_POST['textoInsercionAutor'] ?? null;
+    $textoInsercionMensaje = $_POST['textoInsercionMensaje'] ?? null;
+  
 
 
-    // Definición del tipo de parámetros
-    $typeParameters = "sssssss"; // String String String 
-    // Llamada al método
-    $data1 = $obj1->getData1($sql1, $typeParameters, $bus);
+    if (!$textoInsercionAutor || !$textoInsercionMensaje) {
+        throw new Exception("Todos los campos son obligatorios.");
+    }
 
-    // Devolución de datos en formato JSON
-    header('Content-Type: application/json');
-    echo json_encode($data1);
+    // Incluir el modelo y crear una instancia
+    require_once '../../MODELS/consultas/insercionConsultaRespuestaModel.php';
+    $obj1 = new Datos();
 
+    // Paso 1: Insertar el nuevo registro
+    $sqlInsert = "INSERT INTO respuestas (id_res, id_pub, fecha, id_usu, contenido) VALUES (?, ?, ?, ?, ?)";
+    $typeParametersInsert = "sssss"; // String String Integer
+
+    $insertResult = $obj1->insertData($sqlInsert, $typeParametersInsert, $id_res, $id_pub, $id_usu, $contenido);
+
+    if ($insertResult['status'] !== "success") {
+        echo json_encode($insertResult);
+        exit;
+    }
+
+    // Paso 2: Consultar todos los registros después de la inserción
+    $sql1 = "SELECT id_res, fecha, id_usu, contenido FROM respuestas WHERE id_res LIKE ? OR fecha LIKE ? OR id_usu LIKE ? OR contenido LIKE ? ORDER BY id_res, fecha, id_usu, contenido";
+    $data = $obj1->getData1($sql1, "", ""); // Sin parámetros adicionales en la consulta
+
+    // Devolver todos los registros en formato JSON
+    echo json_encode(["status" => "success", "data" => $data]);
+
+} catch (Exception $e) {
+    // Manejo de errores
+    echo json_encode(["status" => "error", "message" => $e->getMessage()]);
+}
 ?>
