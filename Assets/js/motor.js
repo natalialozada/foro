@@ -343,7 +343,7 @@ if (window.location.href.includes("respuesta.php")){
     
             try
             {
-              const response1 = await makeFetchFormRequest('POST', controller1, formInsercion2);
+              const response1 = await makeFetchFormRequest('POST', controller1, formInsercionRespuesta);
               // Limpiar div antes de añadir elementos
               divResponse1.innerHTML = '';
     
@@ -358,13 +358,13 @@ if (window.location.href.includes("respuesta.php")){
                 divResponse1.textContent = 'No hay datos que coincidan con la búsqueda realizada';
               }
     
-              formInsercion2.reset();
+              formInsercionRespuesta.reset();
             }
             catch (error)
             {
               console.error("Error en la petición:", error.message);
               divResponse1.textContent = 'No se ha realizado la acción';
-              formInsercion2.reset();
+              formInsercionRespuesta.reset();
             }
             finally
             {

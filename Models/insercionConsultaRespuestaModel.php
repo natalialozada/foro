@@ -1,7 +1,7 @@
 <?php
- 
-require_once '../../Db/Con1DB.php';
- 
+
+require_once "../Db/Con1DB.php";
+
 class Datos
 {
     // Método para la inserción de datos
@@ -13,12 +13,12 @@ class Datos
             if (!$stmt) {
                 throw new Exception("Error en la preparación de la consulta: " . $mysqli->error);
             }
- 
+
             $stmt->bind_param($typeParameters, ...$params);
             if (!$stmt->execute()) {
                 throw new Exception("Error en la ejecución de la consulta: " . $stmt->error);
             }
- 
+
             $result = ["status" => "success", "message" => "Registro insertado con éxito."];
         } catch (Exception $e) {
             $result = ["status" => "error", "message" => $e->getMessage()];
@@ -26,10 +26,10 @@ class Datos
             if ($stmt) $stmt->close();
             $mysqli->close();
         }
- 
+
         return $result;
     }
- 
+
     // Método para obtener todos los registros
     public function getData1($sql, $typeParameters = "", ...$params)
     {
@@ -40,16 +40,16 @@ class Datos
         }
         $statement->execute();
         $result = $statement->get_result();
- 
+
         $data = [];
         while ($row = $result->fetch_assoc()) {
             $data[] = $row;
         }
- 
+
         $result->free();
         $statement->close();
         $mysqli->close();
- 
+
         return $data;
     }
 }
