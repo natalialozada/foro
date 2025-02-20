@@ -18,7 +18,7 @@ CREATE TABLE publicacion (
     num_respuestas INT DEFAULT 0,
     imagen VARCHAR(255),
     PRIMARY KEY (id_pub),
-    FOREIGN KEY (id_usu) REFERENCES usuarios(id_usu) 
+    FOREIGN KEY (id_usu) REFERENCES usuarios(id_usu) ON DELETE CASCADE
 );
 
 CREATE TABLE respuestas (
@@ -28,6 +28,6 @@ CREATE TABLE respuestas (
     id_usu INT,
     contenido TEXT,
     PRIMARY KEY (id_res),
-    FOREIGN KEY (id_usu) REFERENCES usuarios(id_usu),
-    FOREIGN KEY (id_pub) REFERENCES publicacion(id_pub) 
+    FOREIGN KEY (id_usu) REFERENCES usuarios(id_usu) ON DELETE CASCADE,
+    FOREIGN KEY (id_pub) REFERENCES publicacion(id_pub) ON DELETE CASCADE
 );

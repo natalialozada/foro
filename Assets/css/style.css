@@ -325,7 +325,7 @@ a:hover {
 
 .contenedorRespuesta {
         width: 40%;
-        margin-left: 32%;
+        margin-left: 29%;
         margin-top: 6.5%;
         background: #f9f9f9;
         padding: 30px;
@@ -347,6 +347,29 @@ a:hover {
     color: #000000;
 }
 
+
+/*Tabla cargar respuestas*/
+
+.response-table {
+    width: 80%;
+    border-collapse: collapse;
+    margin-top: 7%;
+   
+    
+    
+}
+
+.response-table th, .response-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.response-table th {
+    background-color: #d2d6d5;
+    font-weight: bold;
+    color: black;
+}
 
 
 

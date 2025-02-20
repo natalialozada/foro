@@ -7,7 +7,7 @@ try {
         throw new Exception("Error: Debes iniciar sesión para responder.");
     }
 
-    $id_usu = $_SESSION['id_usu'];
+    $usuario = $_SESSION['usuario'];
     $id_pub = $_POST['id_pub'] ?? null;
     $autor = $_POST['textoInsercionAutor'] ?? null;
     $mensaje = $_POST['textoInsercionMensaje'] ?? null;
@@ -22,7 +22,7 @@ try {
         exit;
     }
 
-    require_once "../Models/insercionConsultaRespuestaModel.php";
+    require_once "../Models/insercionConsultaRespuesta2Model.php";
     $obj1 = new Datos();
 
     $sqlCheckPub = "SELECT COUNT(*) FROM publicaciones WHERE id_pub = ?";
@@ -43,16 +43,21 @@ try {
         exit;
     }
 
-    $sqlSelect = "SELECT r.id_res, u.nombre AS autor, r.contenido AS mensaje, r.fecha
-                  FROM respuestas r
-                  JOIN usuarios u ON r.id_usu = u.id_usu
-                  WHERE r.id_pub = ?
-                  ORDER BY r.fecha DESC";
+    $sqlSelect = "SELECT r.id_res,
+                 u.nombre AS autor, 
+                 r.contenido AS mensaje, 
+                 r.fecha
+                 FROM respuestas r
+                 JOIN usuarios u ON r.id_usu = u.id_usu
+                 JOIN publicaciones p ON r.id_pub = p.id_pub
+                 WHERE r.id_pub = ?
+                 ORDER BY r.fecha DESC";
+
     $data = $obj1->getData1($sqlSelect, "i", $id_pub);
 
     echo json_encode(["status" => "success", "data" => $data]);
 
-} catch (Exception $e) {
+    } catch (Exception $e) {
     echo json_encode(["status" => "error", "message" => $e->getMessage()]);
-}
-?>
+    }
+    ?>
