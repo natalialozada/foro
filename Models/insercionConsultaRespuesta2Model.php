@@ -31,7 +31,7 @@ class Datos
     }
 
     // Método para obtener todos los registros
-    public function getData1($sql, $typeParameters = "", ...$params)
+    public function getData1($sql, $typeParameters = "s", ...$params)
     {
         $mysqli = Conex1::con1();
         $statement = $mysqli->prepare($sql);

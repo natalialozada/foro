@@ -3,61 +3,63 @@ session_start();
 header('Content-Type: application/json');
 
 try {
-    if (!isset($_SESSION['id_usu'])) {
-        throw new Exception("Error: Debes iniciar sesión para responder.");
-    }
-
+    // Obtener el usuario desde la sesión
     $usuario = $_SESSION['usuario'];
+
+    // Obtener `id_pub` desde la URL
     $id_pub = $_POST['id_pub'] ?? null;
-    $autor = $_POST['textoInsercionAutor'] ?? null;
-    $mensaje = $_POST['textoInsercionMensaje'] ?? null;
 
-    if (!$id_pub) {
-        echo json_encode(["status" => "error", "message" => "Falta el ID de la publicación."]);
-        exit;
+    // Obtener los datos del formulario
+    $fecha = $_POST['textoInsercionFecha'] ?? null;
+    $contenido = $_POST['textoInsercionMensaje'] ?? null;
+
+    if (!$usuario || !$id_pub || !$fecha || !$contenido) {
+        throw new Exception("Todos los campos son obligatorios.");
     }
 
-    if (!$autor || !$mensaje) {
-        echo json_encode(["status" => "error", "message" => "Todos los campos son obligatorios."]);
-        exit;
+    // Conectar a la base de datos y obtener el id_usu
+    require_once '../Db/Con1DB.php';
+    $mysqli = Conex1::con1();
+
+    // Obtener el id_usu a partir del nombre del usuario
+    $sql_usuario = "SELECT id_usu FROM usuarios WHERE nombre = ?";
+    $stmt = $mysqli->prepare($sql_usuario);
+    $stmt->bind_param("s", $usuario); // Bind del nombre del usuario
+    $stmt->execute();
+    $stmt->bind_result($id_usu);
+    $stmt->fetch();
+    $stmt->close();
+
+    if (!$id_usu) {
+        throw new Exception("Usuario no encontrado.");
     }
 
-    require_once "../Models/insercionConsultaRespuesta2Model.php";
+    // Incluir el modelo y crear una instancia
+    require_once '../Models/insercionConsultaRespuesta2Model.php';
     $obj1 = new Datos();
 
-    $sqlCheckPub = "SELECT COUNT(*) FROM publicaciones WHERE id_pub = ?";
-    $result = $obj1->getData1($sqlCheckPub, "i", $id_pub);
+    // Insertar la nueva respuesta con `id_pub` y `id_usu`
+    $sqlInsert = "INSERT INTO respuestas (id_pub, id_usu, fecha, contenido) VALUES (?, ?, ?, ?)";
+    $typeParametersInsert = "iiss"; // Integer, Integer, String, String
 
-    if ($result[0]['COUNT(*)'] == 0) {
-        throw new Exception("La publicación no existe.");
-    }
-
-    $fecha_actual = date('Y-m-d H:i:s');
-    $sqlInsert = "INSERT INTO respuestas (id_usu, id_pub, autor, contenido, fecha) VALUES (?, ?, ?, ?, ?)";
-    $typeParametersInsert = "iisss";
-
-    $insertResult = $obj1->insertData($sqlInsert, $typeParametersInsert, $id_usu, $id_pub, $autor, $mensaje, $fecha_actual);
+    $insertResult = $obj1->insertData($sqlInsert, $typeParametersInsert, $id_pub, $id_usu, $fecha, $contenido);
 
     if ($insertResult['status'] !== "success") {
         echo json_encode($insertResult);
         exit;
     }
 
-    $sqlSelect = "SELECT r.id_res,
-                 u.nombre AS autor, 
-                 r.contenido AS mensaje, 
-                 r.fecha
-                 FROM respuestas r
-                 JOIN usuarios u ON r.id_usu = u.id_usu
-                 JOIN publicaciones p ON r.id_pub = p.id_pub
-                 WHERE r.id_pub = ?
-                 ORDER BY r.fecha DESC";
-
-    $data = $obj1->getData1($sqlSelect, "i", $id_pub);
+    // Consultar todas las respuestas después de la inserción
+    $sql1 = "SELECT r.fecha, u.nombre AS autor, r.contenido
+             FROM respuestas r
+             JOIN usuarios u ON r.id_usu = u.id_usu
+             WHERE r.id_pub = ?";
+    
+    $data = $obj1->getData1($sql1, "i", $id_pub); // Pasar `id_pub` como parámetro
 
     echo json_encode(["status" => "success", "data" => $data]);
 
-    } catch (Exception $e) {
+} catch (Exception $e) {
     echo json_encode(["status" => "error", "message" => $e->getMessage()]);
-    }
-    ?>
+}
+?>

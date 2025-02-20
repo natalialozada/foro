@@ -138,6 +138,25 @@ function createResponseBlockPublicacion(item) {
 //Response block Respuesta -----------------------------------------------------------------------------------------------------------------------------------
 
 
+function createResponseBlockRespuestas(item) {
+  const bloque0 = document.createElement("div");
+  bloque0.classList.add("bloque0");
+
+  const fields = ["fecha", "autor", "contenido"];
+  fields.forEach(field => {
+      const div = document.createElement("div");
+      div.classList.add("bloque1");
+
+      const link = document.createElement("p");
+      link.href = `mostrarFacturaCliente.php?id_factura=${item.id_factura}`;
+      link.textContent = item[field];
+      
+      div.appendChild(link);
+      bloque0.appendChild(div);
+  });
+
+  return bloque0;
+}
 
 //Formulario Registro ----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -272,53 +291,10 @@ if (window.location.href.includes("respuesta.php")) {
       const divResponse1 = document.getElementById("contenedor2");
 
       try {
-        // Hacer la petición y obtener datos
         const response1 = await makeFetchFormRequest('POST', controller1, formInsercionRespuesta);
-        console.log("Datos recibidos del servidor:", response1); // Verificamos los datos que llegan
+        console.log("Datos recibidos del servidor:", response1);
 
-        // Limpiar el contenedor de respuestas antes de agregar nuevas
-        divResponse1.innerHTML = '';
-
-        if (response1 && response1.length > 0) {
-          // Crear la tabla solo una vez
-          const table = document.createElement("table");
-          table.classList.add("response-table");
-
-          // Crear el encabezado de la tabla
-          const thead = document.createElement("thead");
-          const headerRow = document.createElement("tr");
-          const headers = ["Fecha", "Autor", "Contenido"]; // No incluimos ID
-
-          headers.forEach(headerText => {
-            const th = document.createElement("th");
-            th.textContent = headerText;
-            headerRow.appendChild(th);
-          });
-
-          thead.appendChild(headerRow);
-          table.appendChild(thead);
-          divResponse1.appendChild(table);
-
-          // Crear el cuerpo de la tabla
-          const tbody = document.createElement("tbody");
-          table.appendChild(tbody);
-
-          // Llenar las filas de la tabla con los datos de la respuesta
-          response1.forEach(item => {
-            const row = document.createElement("tr");
-
-            // Crear celdas para cada campo sin incluir los IDs
-            ["fecha", "autor", "contenido"].forEach(field => {
-              const td = document.createElement("td");
-              td.textContent = item[field] || "N/A"; // Si no hay dato, ponemos "N/A"
-              row.appendChild(td);
-            });
-
-            tbody.appendChild(row);
-          });
-        } else {
-          divResponse1.innerHTML = "<p>No hay respuestas disponibles.</p>";
-        }
+        actualizarContenedor(response1, divResponse1);
 
         formInsercionRespuesta.reset();
       } catch (error) {
@@ -330,81 +306,76 @@ if (window.location.href.includes("respuesta.php")) {
   });
 }
 
+const formInsercionRespuesta2 = document.getElementById("formInsercionRespuesta");
 
+if (formInsercionRespuesta2) {
+  const button1 = document.getElementById("botonRespuesta");
+  const controller1 = "Controllers/insercionConsultaRespuesta2Controller.php";
+  const divResponse1 = document.getElementById("contenedor2");
 
-  
-    const formInsercionRespuesta2 = document.getElementById("formInsercionRespuesta2");
-    // Paso 2 - Asociación del elemento al evento (submit) y llamada a la función
-  
-    if (formInsercionRespuesta2)
-    {
-      const button1 = document.getElementById("botonInsercionClientes");
-      const controller1 = "CONTROLLERS/consultas/insercionConsultaCliente2Controller.php";
-      const divResponse1 = document.getElementById("contenedor2");
-  
-      formInsercionRespuesta2.addEventListener("submit", function(event) {
-        event.preventDefault();
-        button1.disabled = true;
-  
-        makeFetchFormRequest('POST', controller1, formInsercionRespuesta2)
-        .then(response => {
-        // alert("has llegado al makeformrequest");
-          if (response.status === "success")
-          {
-  
-            formInsercionRespuesta2.reset();
-            actualizarContenedor2(response.data);
-          }
-          else
-          {
-            divResponse1.textContent = response.message || 'Error desconocido.';
-          }
-        })
-        .catch(error => {
-          console.error("Error en la inserción:", error.message);
-          divResponse1.textContent = 'No se pudo realizar la inserción';
-        })
-        .finally(() => {
-          button1.disabled = false;
-        });
+  formInsercionRespuesta2.addEventListener("submit", function(event) {
+    event.preventDefault();
+    button1.disabled = true;
+
+    makeFetchFormRequest('POST', controller1, formInsercionRespuesta2)
+    .then(response => {
+      if (response.status === "success") {
+        formInsercionRespuesta2.reset();
+        actualizarContenedor(response.data, divResponse1);
+      } else {
+        divResponse1.textContent = response.message || 'Error desconocido.';
+      }
+    })
+    .catch(error => {
+      console.error("Error en la inserción:", error.message);
+      divResponse1.textContent = 'No se pudo realizar la inserción';
+    })
+    .finally(() => {
+      button1.disabled = false;
+    });
+  });
+}
+
+function actualizarContenedor(data, divResponse1) {
+  divResponse1.innerHTML = '';
+
+  if (data && data.length > 0) {
+    const table = document.createElement("table");
+    table.classList.add("response-table");
+
+    const thead = document.createElement("thead");
+    const headerRow = document.createElement("tr");
+    const headers = ["Fecha", "Autor", "Contenido"];
+
+    headers.forEach(headerText => {
+      const th = document.createElement("th");
+      th.textContent = headerText;
+      headerRow.appendChild(th);
+    });
+
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+    divResponse1.appendChild(table);
+
+    const tbody = document.createElement("tbody");
+    table.appendChild(tbody);
+
+    data.forEach(item => {
+      const row = document.createElement("tr");
+
+      ["fecha", "autor", "contenido"].forEach(field => {
+        const td = document.createElement("td");
+        td.textContent = item[field] || "N/A";
+        row.appendChild(td);
       });
-      
-  
-  
-  
-    function actualizarContenedor2(data) {
-     // alert("hola");
-      divResponse1.innerHTML = '';
-  
-      if (data && data.length > 0)
-      {
-        // Crear un contenedor para el encabezado
-        const headerContainer = document.createElement("div");
-        headerContainer.classList.add("bloque0"); // Clase opcional para agrupar el encabezado
-        console.log()
-        // Crear cada encabezado individualmente con la clase "bloque1"
-        const headers = ["DNI_Cliente", "Nombre", "Apellidos", "Telefono", "Correo"];
-        headers.forEach(text => {
-          const headerDiv = document.createElement("div");
-          headerDiv.classList.add("bloque1");
-          headerDiv.innerHTML = `<strong>${text}</strong>`;
-          headerContainer.appendChild(headerDiv);
-        });
-    
-        // Agregar el contenedor de encabezado al contenedor principal
-        divResponse1.appendChild(headerContainer);
-    
-        // Agregar los datos de cada item usando createResponseBlock
-        data.forEach(item => {
-          divResponse1.appendChild(createResponseBlockClientes(item));
-        });
-      }
-      else
-      {
-        divResponse1.textContent = 'No hay datos disponibles.';
-      }
-    }
+
+      tbody.appendChild(row);
+    });
+  } else {
+    divResponse1.innerHTML = "<p>No hay respuestas disponibles.</p>";
   }
+}
+
 /*----------------------------------------------------------------------------*/ 
 
 
