@@ -451,7 +451,7 @@ async function buscarPublicacionPorTitulo(titulo) {
         alert('Hubo un error al buscar las publicaciones.');
     }
 }
- 
+
 // Función para mostrar las publicaciones encontradas
 function mostrarPublicacionesEncontradas(publicaciones) {
     const contenedor = document.getElementById('publicacionesEncontradas');
