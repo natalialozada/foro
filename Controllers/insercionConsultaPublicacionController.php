@@ -15,27 +15,31 @@
     $obj1 = new Datos;
     // Definición de la instrucción
    
+   
+
     $sql1 = "SELECT 
     p.id_pub, 
     p.titulo, 
     p.fecha, 
-    u.nombre AS autor,  -- Trae el nombre en vez del ID
+    u.nombre AS autor,  
     p.contenido, 
-    p.num_respuestas, 
+    COALESCE(COUNT(r.id_res), 0) AS num_respuestas, -- Si no hay respuestas, devuelve 0
     p.imagen
     FROM publicacion p
     JOIN usuarios u ON p.id_usu = u.id_usu
+    LEFT JOIN respuestas r ON p.id_pub = r.id_pub  
     WHERE p.id_pub LIKE ? 
     OR p.titulo LIKE ? 
     OR p.fecha LIKE ? 
     OR u.nombre LIKE ? 
     OR p.contenido LIKE ? 
-    OR p.num_respuestas LIKE ?
-    OR p.imagen LIKE ?";
+    OR p.imagen LIKE ?
+    GROUP BY p.id_pub, p.titulo, p.fecha, u.nombre, p.contenido, p.imagen";
+
 
 
     // Definición del tipo de parámetros
-    $typeParameters = "sssssss"; // String String String 
+    $typeParameters = "ssssss"; // String String String 
     // Llamada al método
     $data1 = $obj1->getData1($sql1, $typeParameters, $bus);
 

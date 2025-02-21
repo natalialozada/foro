@@ -1,5 +1,6 @@
 <?php
 
+
     // Tratamiento input type='text'
     $bus = empty($_POST['textoConsulta1']) ? '' : $_POST['textoConsulta1'];
 
@@ -23,7 +24,7 @@
     r.contenido 
     FROM respuestas r
     JOIN publicacion p ON p.id_pub = r.id_pub
-    JOIN usuarios u ON p.id_usu = u.id_usu
+    JOIN usuarios u ON r.id_usu = u.id_usu
     WHERE r.id_res LIKE ? 
     OR p.id_pub LIKE ? 
     OR r.fecha LIKE ? 
