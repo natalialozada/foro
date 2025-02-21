@@ -445,9 +445,7 @@ async function buscarPublicacionPorTitulo(titulo) {
         if (result.status === 'success' && result.data.length > 0) {
             // Mostrar las publicaciones encontradas
             mostrarPublicacionesEncontradas(result.data);
-        } else {
-            alert('No se encontraron publicaciones con ese título.');
-        }
+        } 
     } catch (error) {
         console.error("Error al buscar publicaciones:", error);
         alert('Hubo un error al buscar las publicaciones.');
@@ -483,27 +481,26 @@ function mostrarPublicacionesEncontradas(publicaciones) {
  
 // Función para eliminar una publicación
 async function eliminarPublicacion(idPub) {
-    console.log("Eliminando publicación con ID:", idPub); // Verificar que el ID de la publicación se pasa a la función
- 
-    if (confirm("¿Estás seguro de que deseas eliminar esta publicación?")) {
-        try {
-            // Usar makeFetchFormRequest para eliminar la publicación
-            const result = await makeFetchFormRequest('POST', 'Controllers/eliminarPublicacionController.php', {
-                id_pub: idPub
-            });
- 
-            if (result.status === 'success') {
-                alert('Publicación eliminada con éxito.');
-                // Refrescar la lista de publicaciones
-                buscarPublicacionPorTitulo(document.getElementById('tituloBusqueda').value.trim());
-            } else {
-                alert('Error al eliminar la publicación: ' + result.message);
-            }
-        } catch (error) {
-            console.error("Error al eliminar publicación:", error);
-            alert('Hubo un error al eliminar la publicación.');
-        }
-    }
+  console.log("Eliminando publicación con ID:", idPub);
+  
+  if (confirm("¿Estás seguro de que deseas eliminar esta publicación?")) {
+      try {
+          // Usar makeFetchFormRequest para eliminar la publicación
+          const result = await makeFetchFormRequest('POST', 'Controllers/eliminarPublicacionController.php', { id_pub: idPub });
+          
+          // Manejar la respuesta en JavaScript
+          if (result.status === 'success') {
+              alert(result.message);  // Mostrar alerta si la publicación fue eliminada
+              // Refrescar la lista de publicaciones
+              buscarPublicacionPorTitulo(document.getElementById('tituloBusqueda').value.trim());
+          } else {
+              alert(result.message || 'Hubo un problema al eliminar la publicación.');  // Mostrar mensaje de error
+          }
+      } catch (error) {
+          console.error("Error al eliminar publicación:", error);
+          alert('Hubo un error al eliminar la publicación.');
+      }
+  }
 }
  
 });

@@ -2,6 +2,12 @@
 // Obtener el título del POST
 $titulo = isset($_POST['titulo']) ? $_POST['titulo'] : '';
 
+// Validar si el título está vacío
+if (empty($titulo)) {
+    echo json_encode(['status' => 'error', 'message' => 'El título no puede estar vacío.']);
+    exit();
+}
+
 // Conectar a la base de datos
 require_once '../Db/Con1Db.php';
 
@@ -26,7 +32,8 @@ $sql = "SELECT
 // Preparar la sentencia
 $stmt = $mysqli->prepare($sql);  // Usamos $mysqli en lugar de $conn
 if ($stmt === false) {
-    die("Error al preparar la consulta: " . $mysqli->error);
+    echo json_encode(['status' => 'error', 'message' => 'Error al preparar la consulta: ' . $mysqli->error]);
+    exit();
 }
 
 // Añadir los comodines para el LIKE
@@ -50,9 +57,13 @@ while ($row = $result->fetch_assoc()) {
 // Cerrar la conexión
 $stmt->close();
 
-// Devolver los resultados en formato JSON
-header('Content-Type: application/json');
-echo json_encode(['status' => 'success', 'data' => $data]);
+// Si no se encontraron publicaciones
+if (empty($data)) {
+    echo json_encode(['status' => 'error', 'message' => 'No se encontraron publicaciones con ese título.']);
+} else {
+    // Devolver los resultados en formato JSON
+    echo json_encode(['status' => 'success', 'data' => $data]);
+}
 
 // Cerrar la conexión a la base de datos
 $mysqli->close();

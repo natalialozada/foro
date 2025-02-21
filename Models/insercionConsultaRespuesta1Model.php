@@ -12,7 +12,7 @@ class Datos
         // Sentencia
         $statement = $mysqli->prepare($sql);
         // Parámetros (ejemplo: si = string integer)
-        $statement->bind_param($typeParameters, $p1, $p1, $p1, $p1, $p1);
+        $statement->bind_param($typeParameters, $p1);
         // Ejecución de la sentencia
         $statement->execute();
         // Obtención del resultado
