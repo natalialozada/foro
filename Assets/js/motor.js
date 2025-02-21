@@ -1,38 +1,50 @@
-async function makeFetchFormRequest(method, url, form) {
-  const formData = new FormData(form);
+async function makeFetchFormRequest(method, url, data) {
+  const formData = new FormData();
+
+  // Verificar si el parámetro `data` es un formulario HTML
+  if (data instanceof HTMLFormElement) {
+      new FormData(data).forEach((value, key) => {
+          formData.append(key, value);
+      });
+  } else {
+      // Asumir que `data` es un objeto
+      for (const key in data) {
+          if (data.hasOwnProperty(key)) {
+              formData.append(key, data[key]);
+          }
+      }
+  }
 
   try {
-    // Realizar la solicitud
-    const response = await fetch(url, {
-      method: method,
-      body: formData,
-    });
+      const response = await fetch(url, {
+          method: method,
+          body: formData,
+      });
 
-    console.log("Estado de la respuesta HTTP:", response.status);
-    console.log("Encabezados de la respuesta:", response.headers);
+      console.log("Estado de la respuesta HTTP:", response.status);
+      console.log("Encabezados de la respuesta:", response.headers);
 
-    // Verificar si la respuesta es válida
-    if (!response.ok) {
-      // Leer como texto en caso de error
-      const errorText = await response.text();
-      console.error("Error en la respuesta del servidor:", errorText);
-      throw new Error(`Error en la respuesta HTTP: ${response.status} ${response.statusText}`);
-    }
+      // Verificar si la respuesta es válida
+      if (!response.ok) {
+          const errorText = await response.text();
+          console.error("Error en la respuesta del servidor:", errorText);
+          throw new Error(`Error en la respuesta HTTP: ${response.status} ${response.statusText}`);
+      }
 
-    // Leer y procesar el cuerpo como JSON
-    const responseBody = await response.text(); // Leer el cuerpo como texto primero
-    try {
-      const jsonData = JSON.parse(responseBody); // Intentar parsear como JSON
-      console.log("Respuesta JSON recibida:", jsonData);
-      return jsonData;
-    } catch (jsonParseError) {
-      console.error("Error al parsear JSON:", jsonParseError);
-      console.error("Contenido bruto de la respuesta:", responseBody);
-      throw new Error("La respuesta no contiene JSON válido.");
-    }
+      // Leer y procesar el cuerpo como JSON
+      const responseBody = await response.text(); // Leer el cuerpo como texto primero
+      try {
+          const jsonData = JSON.parse(responseBody); // Intentar parsear como JSON
+          console.log("Respuesta JSON recibida:", jsonData);
+          return jsonData;
+      } catch (jsonParseError) {
+          console.error("Error al parsear JSON:", jsonParseError);
+          console.error("Contenido bruto de la respuesta:", responseBody);
+          throw new Error("La respuesta no contiene JSON válido.");
+      }
   } catch (error) {
-    console.error("Error capturado durante la petición:", error.message);
-    throw error;
+      console.error("Error capturado durante la petición:", error.message);
+      throw error;
   }
 }
 
@@ -401,5 +413,97 @@ if(formSubidaArchivos)
     console.log("formulario enviado")
   });
 }
-});
+
 /* ---------------------------------- FIN - (submit) Insertar y subir archivos 1  */
+
+
+ /*BOTON ELIMINAR*/
+ 
+    // Evento de búsqueda y eliminación de publicación
+   
+      // Evento de búsqueda y eliminación de publicación
+      document.getElementById('botonEliminarPorTitulo').addEventListener('click', function () {
+        const tituloBusqueda = document.getElementById('tituloBusqueda').value.trim();
+ 
+        if (tituloBusqueda) {
+            // Realizamos la búsqueda por título
+            buscarPublicacionPorTitulo(tituloBusqueda);
+        } else {
+            alert("Por favor, ingresa el título de la publicación.");
+        }
+    });
+ 
+ 
+// Función para buscar publicaciones por título
+async function buscarPublicacionPorTitulo(titulo) {
+    try {
+        // Usar makeFetchFormRequest para enviar la solicitud
+        const result = await makeFetchFormRequest('POST', 'Controllers/buscarPublicacionPorTitulo.php', {
+            titulo: titulo
+        });
+ 
+        if (result.status === 'success' && result.data.length > 0) {
+            // Mostrar las publicaciones encontradas
+            mostrarPublicacionesEncontradas(result.data);
+        } else {
+            alert('No se encontraron publicaciones con ese título.');
+        }
+    } catch (error) {
+        console.error("Error al buscar publicaciones:", error);
+        alert('Hubo un error al buscar las publicaciones.');
+    }
+}
+ 
+// Función para mostrar las publicaciones encontradas
+function mostrarPublicacionesEncontradas(publicaciones) {
+    const contenedor = document.getElementById('publicacionesEncontradas');
+    contenedor.innerHTML = ''; // Limpiar cualquier contenido previo
+ 
+    publicaciones.forEach(publicacion => {
+        const div = document.createElement('div');
+        div.classList.add('publicacion');
+        div.innerHTML = `
+            <p><strong>${publicacion.titulo}</strong></p>
+            <p>Autor: ${publicacion.autor}</p>
+            <p>Fecha: ${publicacion.fecha}</p>
+            <button class="eliminarBtn" data-id="${publicacion.id_pub}">Eliminar</button>
+        `;
+ 
+        console.log("Publicacion encontrada:", publicacion); // Verificar que cada publicación tiene id_pub
+ 
+        // Agregar el evento 'click' al botón de eliminación
+        div.querySelector('.eliminarBtn').addEventListener('click', function () {
+            console.log("Botón de eliminar presionado para ID:", publicacion.id_pub); // Verificar que el id_pub se pasa correctamente
+            eliminarPublicacion(publicacion.id_pub);
+        });
+ 
+        contenedor.appendChild(div);
+    });
+}
+ 
+// Función para eliminar una publicación
+async function eliminarPublicacion(idPub) {
+    console.log("Eliminando publicación con ID:", idPub); // Verificar que el ID de la publicación se pasa a la función
+ 
+    if (confirm("¿Estás seguro de que deseas eliminar esta publicación?")) {
+        try {
+            // Usar makeFetchFormRequest para eliminar la publicación
+            const result = await makeFetchFormRequest('POST', 'Controllers/eliminarPublicacionController.php', {
+                id_pub: idPub
+            });
+ 
+            if (result.status === 'success') {
+                alert('Publicación eliminada con éxito.');
+                // Refrescar la lista de publicaciones
+                buscarPublicacionPorTitulo(document.getElementById('tituloBusqueda').value.trim());
+            } else {
+                alert('Error al eliminar la publicación: ' + result.message);
+            }
+        } catch (error) {
+            console.error("Error al eliminar publicación:", error);
+            alert('Hubo un error al eliminar la publicación.');
+        }
+    }
+}
+ 
+});

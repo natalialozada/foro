@@ -12,6 +12,7 @@
 
 <!-- Contenedor para mostrar las publicaciones encontradas -->
 <div id="publicacionesEncontradas"></div>
+<a href="publicacion.php" class="añadir1">VOLVER AL ÍNDICE</a>
 
-    <div id="contenedor2" class="contenedor2"></div>
+   
 </div>
